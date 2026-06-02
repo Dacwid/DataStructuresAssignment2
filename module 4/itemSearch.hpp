@@ -27,108 +27,6 @@ class ItemSearchBST
 private:
     BSTNode *root;
 
-    void inOrderTraversal(BSTNode *node)
-    {
-        if (node == nullptr)
-        {
-            return;
-        }
-
-        inOrderTraversal(node->left);
-
-        cout << "Item ID: " << node->data.itemID
-             << ", Name: " << node->data.name
-             << ", Location: ("
-             << node->data.location.zone << ", "
-             << node->data.location.aisle << ", "
-             << node->data.location.shelf << ")"
-             << endl;
-
-        inOrderTraversal(node->right);
-    };
-
-    Item *searchByNameHelper(BSTNode *node, const string &name)
-    {
-        if (node == nullptr)
-        {
-            return nullptr;
-        }
-
-
-        if (node->data.name == name)
-        {
-            return &node->data;
-        }
-
-        Item *leftResult = searchByNameHelper(node->left, name);
-        if (leftResult != nullptr)
-        {
-            return leftResult;
-        }
-
-
-        return searchByNameHelper(node->right, name);
-    }
-
-    BSTNode *deleteHelper(BSTNode *node, int itemID)
-    {
-        if (node == nullptr)
-        {
-            return nullptr;
-        }
-
-
-        if (itemID < node->data.itemID)
-        {
-            node->left = deleteHelper(node->left, itemID);
-        }
-
-        else if (itemID > node->data.itemID)
-        {
-            node->right = deleteHelper(node->right, itemID);
-        }
-        else
-        {
-
-            if (node->left == nullptr)
-            {
-                BSTNode *temp = node->right;
-                delete node;
-                return temp;
-            }
-            else if (node->right == nullptr)
-            {
-                BSTNode *temp = node->left;
-                delete node;
-                return temp;
-            }
-
-
-            BSTNode *temp = findMin(node->right);
-
-            node->data = temp->data;
-
-            node->right = deleteHelper(node->right, temp->data.itemID);
-        }
-
-        return node;
-    }
-
-    BSTNode *findMin(BSTNode *node)
-    {
-        while (node->left != nullptr)
-        {
-            node = node->left;
-        }
-        return node;
-    }
-
-public:
-    ItemSearchBST()
-    {
-        root = nullptr;
-    }
-
     bool insertItem(const Item &item)
     {
         BSTNode *newNode = new BSTNode(item);
@@ -169,6 +67,122 @@ public:
                 return false; // duplicate itemID
             }
         };
+    }
+
+    // in order
+    void inOrderTraversal(BSTNode *node)
+    {
+        if (node == nullptr)
+        {
+            return;
+        }
+
+        inOrderTraversal(node->left);
+
+        cout << "Item ID: " << node->data.itemID
+             << ", Name: " << node->data.name
+             << ", Location: ("
+             << node->data.location.zone << ", "
+             << node->data.location.aisle << ", "
+             << node->data.location.shelf << ")"
+             << endl;
+
+        inOrderTraversal(node->right);
+    };
+
+    // pre order
+    Item *searchByNameHelper(BSTNode *node, const string &name)
+    {
+        if (node == nullptr)
+        {
+            return nullptr;
+        }
+
+        if (node->data.name == name)
+        {
+            return &node->data;
+        }
+
+        Item *leftResult = searchByNameHelper(node->left, name);
+        if (leftResult != nullptr)
+        {
+            return leftResult;
+        }
+
+        return searchByNameHelper(node->right, name);
+    }
+
+    
+    BSTNode *deleteHelper(BSTNode *node, int itemID)
+    {
+        if (node == nullptr)
+        {
+            return nullptr;
+        }
+
+        if (itemID < node->data.itemID)
+        {
+            node->left = deleteHelper(node->left, itemID);
+        }
+
+        else if (itemID > node->data.itemID)
+        {
+            node->right = deleteHelper(node->right, itemID);
+        }
+        else
+        {
+
+            if (node->left == nullptr)
+            {
+                BSTNode *temp = node->right;
+                delete node;
+                return temp;
+            }
+            else if (node->right == nullptr)
+            {
+                BSTNode *temp = node->left;
+                delete node;
+                return temp;
+            }
+
+            BSTNode *temp = findMin(node->right);
+
+            node->data = temp->data;
+
+            node->right = deleteHelper(node->right, temp->data.itemID);
+        }
+
+        return node;
+    }
+
+    BSTNode *findMin(BSTNode *node)
+    {
+        while (node->left != nullptr)
+        {
+            node = node->left;
+        }
+        return node;
+    }
+
+    // post order
+    void deleteTree(BSTNode *node)
+    {
+        if (node == nullptr)
+        {
+            return;
+        }
+
+        deleteTree(node->left);
+
+        deleteTree(node->right);
+
+        delete node;
+    }
+
+public:
+    ItemSearchBST()
+    {
+        root = nullptr;
     }
 
     bool loadFromCSV(const string &filename)
@@ -222,6 +236,7 @@ public:
         inOrderTraversal(root);
     }
 
+    // pre order
     Item *searchByID(int itemID)
     {
         BSTNode *current = root;
@@ -242,7 +257,7 @@ public:
             }
         }
 
-        return nullptr; // not found
+        return nullptr;
     }
 
     Item *searchByName(const string &name)
@@ -254,7 +269,7 @@ public:
     {
         if (searchByID(itemID) == nullptr)
         {
-            return false; // not found
+            return false;
         }
 
         root = deleteHelper(root, itemID);
@@ -271,7 +286,6 @@ public:
             return false;
         }
 
-        // update fields
         item->name = newName;
         item->location = newLocation;
 
@@ -282,23 +296,6 @@ public:
     {
         deleteTree(root);
         root = nullptr;
-    }
-
-    void deleteTree(BSTNode *node)
-    {
-        if (node == nullptr)
-        {
-            return;
-        }
-
-        // delete left subtree
-        deleteTree(node->left);
-
-        // delete right subtree
-        deleteTree(node->right);
-
-        // delete current node
-        delete node;
     }
 };
 
