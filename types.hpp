@@ -11,19 +11,19 @@ const int MAX_ROUTE    = 50;
 const int MAX_ITEMS    = 100;
 const int MAX_CHILDREN = 20;
 
-
 struct Location {
     int zone;
     int aisle;
     int shelf;
 };
 
-
 enum Direction {
     FORWARD,
     BACKWARD,
     LEFT,
-    RIGHT
+    RIGHT,
+    UP,
+    DOWN
 };
 
 enum OrderStatus {
@@ -55,7 +55,6 @@ struct Item {
     string name;
     Location location;
 };
-
 
 struct Route {
     Location stops[MAX_ROUTE];
