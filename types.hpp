@@ -2,7 +2,7 @@
 #define TYPES_HPP
 
 #include <string>
-
+#include <iostream>
 using namespace std;
 
 const int MAX_ORDERS   = 100;
@@ -23,7 +23,9 @@ enum Direction {
     FORWARD,
     BACKWARD,
     LEFT,
-    RIGHT
+    RIGHT, 
+    UP, 
+    DOWN
 };
 
 enum OrderStatus {
