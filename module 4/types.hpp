@@ -1,6 +1,6 @@
 #ifndef TYPES_HPP
 #define TYPES_HPP
-
+using namespace std;
 #include <string>
 
 struct Location
@@ -13,7 +13,7 @@ struct Location
 struct Item
 {
     int itemID;
-    std::string name;
+    string name;
     Location location;
 };
 

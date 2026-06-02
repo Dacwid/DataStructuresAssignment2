@@ -47,6 +47,82 @@ private:
         inOrderTraversal(node->right);
     };
 
+    Item *searchByNameHelper(BSTNode *node, const string &name)
+    {
+        if (node == nullptr)
+        {
+            return nullptr;
+        }
+
+
+        if (node->data.name == name)
+        {
+            return &node->data;
+        }
+
+        Item *leftResult = searchByNameHelper(node->left, name);
+        if (leftResult != nullptr)
+        {
+            return leftResult;
+        }
+
+
+        return searchByNameHelper(node->right, name);
+    }
+
+    BSTNode *deleteHelper(BSTNode *node, int itemID)
+    {
+        if (node == nullptr)
+        {
+            return nullptr;
+        }
+
+
+        if (itemID < node->data.itemID)
+        {
+            node->left = deleteHelper(node->left, itemID);
+        }
+
+        else if (itemID > node->data.itemID)
+        {
+            node->right = deleteHelper(node->right, itemID);
+        }
+        else
+        {
+
+            if (node->left == nullptr)
+            {
+                BSTNode *temp = node->right;
+                delete node;
+                return temp;
+            }
+            else if (node->right == nullptr)
+            {
+                BSTNode *temp = node->left;
+                delete node;
+                return temp;
+            }
+
+
+            BSTNode *temp = findMin(node->right);
+
+            node->data = temp->data;
+
+            node->right = deleteHelper(node->right, temp->data.itemID);
+        }
+
+        return node;
+    }
+
+    BSTNode *findMin(BSTNode *node)
+    {
+        while (node->left != nullptr)
+        {
+            node = node->left;
+        }
+        return node;
+    }
+
 public:
     ItemSearchBST()
     {
@@ -174,30 +250,6 @@ public:
         return searchByNameHelper(root, name);
     }
 
-    Item *searchByNameHelper(BSTNode *node, const string &name)
-    {
-        if (node == nullptr)
-        {
-            return nullptr;
-        }
-
-        // 1. check current node
-        if (node->data.name == name)
-        {
-            return &node->data;
-        }
-
-        // 2. search left subtree
-        Item *leftResult = searchByNameHelper(node->left, name);
-        if (leftResult != nullptr)
-        {
-            return leftResult;
-        }
-
-        // 3. search right subtree
-        return searchByNameHelper(node->right, name);
-    }
-
     bool deleteItem(int itemID)
     {
         if (searchByID(itemID) == nullptr)
@@ -207,61 +259,6 @@ public:
 
         root = deleteHelper(root, itemID);
         return true;
-    }
-
-    BSTNode *deleteHelper(BSTNode *node, int itemID)
-    {
-        if (node == nullptr)
-        {
-            return nullptr;
-        }
-
-        // go left
-        if (itemID < node->data.itemID)
-        {
-            node->left = deleteHelper(node->left, itemID);
-        }
-        // go right
-        else if (itemID > node->data.itemID)
-        {
-            node->right = deleteHelper(node->right, itemID);
-        }
-        else
-        {
-            // FOUND NODE TO DELETE
-
-            // Case 1 + Case 2
-            if (node->left == nullptr)
-            {
-                BSTNode *temp = node->right;
-                delete node;
-                return temp;
-            }
-            else if (node->right == nullptr)
-            {
-                BSTNode *temp = node->left;
-                delete node;
-                return temp;
-            }
-
-            // Case 3 (two children)
-            BSTNode *temp = findMin(node->right);
-
-            node->data = temp->data;
-
-            node->right = deleteHelper(node->right, temp->data.itemID);
-        }
-
-        return node;
-    }
-
-    BSTNode *findMin(BSTNode *node)
-    {
-        while (node->left != nullptr)
-        {
-            node = node->left;
-        }
-        return node;
     }
 
     bool updateItem(int itemID, const string &newName, Location newLocation)
@@ -286,7 +283,7 @@ public:
         deleteTree(root);
         root = nullptr;
     }
-    
+
     void deleteTree(BSTNode *node)
     {
         if (node == nullptr)
