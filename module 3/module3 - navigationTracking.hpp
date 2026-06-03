@@ -139,10 +139,9 @@ public:
             if (i > 0) {
                 // using previous and current location, use determinDirection function to get the direction
                 Location previousLocation = currentRoute.stops[i - 1];
-                // check if corrdinate is default arg then no need to skip
-                if (obstacle.zone == -1 && obstacle.aisle == -1 && obstacle.shelf == -1) {
-                    continue;
-                } else if (currentLocation.zone == obstacle.zone && currentLocation.aisle == obstacle.aisle && currentLocation.shelf == obstacle.shelf) {
+                // only check for obstacle if it was inputted in argument
+                bool hasObstacle = !(obstacle.zone == -1 && obstacle.aisle == -1 && obstacle.shelf == -1);
+                if (hasObstacle && currentLocation.zone == obstacle.zone && currentLocation.aisle == obstacle.aisle && currentLocation.shelf == obstacle.shelf) {
                     cout << "Obstacle detected at Location (Zone: " << currentLocation.zone
                          << ", Aisle: " << currentLocation.aisle
                          << ", Shelf: " << currentLocation.shelf << "). Going back home" << endl;
