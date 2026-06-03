@@ -123,7 +123,23 @@ public:
         }
     }
 
-     // logic to actually navigate based on the route and also stores the direction taken in the stack for later inverse navigation
+    // find detour
+    Location findDetour(Location blocked, Location destination) {
+        Location detour = blocked;
+        // goes through each part of coordinate to find detour using just one change
+        if (destination.aisle != blocked.aisle) {
+            detour.aisle = destination.aisle;
+            return detour;
+        }
+        if (destination.zone != blocked.zone) {
+            detour.zone = destination.zone;
+            return detour;
+        }
+        detour.shelf = blocked.shelf + 1;
+        return detour;
+    }
+
+    // logic to actually navigate based on the route and also stores the direction taken in the stack for later inverse navigation
     void navigate(Location obstacle = {-1, -1, -1}) {
         stackTop = -1;
         if (currentRoute.count == 0) {
@@ -132,26 +148,31 @@ public:
         }
 
         // go through each stop
-        for (int i = 0; i < currentRoute.count; i++) {
+        for (int stop = 0; stop < currentRoute.count; stop++) {
             // sets current location
-            Location currentLocation = currentRoute.stops[i];
-            currentLocationIndex = i;
-            if (i > 0) {
+            Location currentLocation = currentRoute.stops[stop];
+            currentLocationIndex = stop;
+            if (stop > 0) {
                 // using previous and current location, use determinDirection function to get the direction
-                Location previousLocation = currentRoute.stops[i - 1];
+                Location previousLocation = currentRoute.stops[stop - 1];
                 // only check for obstacle if it was inputted in argument
                 if (!(obstacle.zone == -1 && obstacle.aisle == -1 && obstacle.shelf == -1) && currentLocation.zone == obstacle.zone && currentLocation.aisle == obstacle.aisle && currentLocation.shelf == obstacle.shelf) {
                     cout << "Obstacle detected at Location (Zone: " << currentLocation.zone
                          << ", Aisle: " << currentLocation.aisle
-                         << ", Shelf: " << currentLocation.shelf << "). Going back home" << endl;
-                    returnHome();
-                    return;
+                         << ", Shelf: " << currentLocation.shelf << "). Attempting reroute." << endl;
+                    Location destination = currentRoute.stops[currentRoute.count - 1];
+                    Location detour = findDetour(currentLocation, destination);
+                    currentRoute.stops[stop] = detour;
+                    cout << "Rerouting through (Zone: " << detour.zone
+                         << ", Aisle: " << detour.aisle
+                         << ", Shelf: " << detour.shelf << ")" << endl;
+                    continue;
                 }
                 Direction direction = determineDirection(previousLocation, currentLocation);
                 pushDirection(direction);
                 printDirectionTaken(direction);
             // this is for root node
-            } else if (i == 0) {
+            } else if (stop == 0) {
                 cout << "Starting at Location (Zone: " << currentLocation.zone
                      << ", Aisle: " << currentLocation.aisle
                      << ", Shelf: " << currentLocation.shelf << ")" << endl;
