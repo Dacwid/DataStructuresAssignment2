@@ -24,7 +24,7 @@ int main() {
     itemBST.loadFromCSV("assets/items.csv");
     warehouse.buildFromFile("assets/items.csv");
 
-
+     // printing status
     cout << "\n=== WAREHOUSE ROBOT NAVIGATION SYSTEM ===" << endl;
 
     cout << "\n--- Module 1: Pending Orders ---" << endl;
@@ -43,6 +43,7 @@ int main() {
     RobotAssignment assignments[MAX_ORDERS];
     int assignCount = 0;
 
+    // goes through each order and does the entire life cycle module 1 -> 2 -> 4 -> 5 -> 3
     while (!isEmpty(orderQueue)) {
         cout << "\n========================================" << endl;
 
@@ -104,6 +105,7 @@ int main() {
     cout << "\n========================================" << endl;
     cout << "All orders processed." << endl;
 
+    // testing for obstacles if have then just go back home
     cout << "\n========================================" << endl;
     cout << "[M3] --- Obstacle Test ---" << endl;
     Location obstacle = {2, 3, 0};
@@ -124,6 +126,7 @@ int main() {
         }
     }
 
+    // final display of everything
     cout << "\n--- Module 1: Assigned Orders History ---" << endl;
     displayAssigned(orderQueue);
 
