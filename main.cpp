@@ -1,5 +1,5 @@
 // Compilation (from project root):
-//   g++ -std=c++17 -I. main.cpp "module 5/module5 - warehouseLayout.cpp" -o warehouse
+//   g++ -std=c++17 -I. main.cpp "module 5/module5 - WarehouseLayout.cpp" -o warehouse
 
 #include "types.hpp"
 #include "module 1/module1 - orderManagement.hpp"
@@ -103,6 +103,26 @@ int main() {
 
     cout << "\n========================================" << endl;
     cout << "All orders processed." << endl;
+
+    cout << "\n========================================" << endl;
+    cout << "[M3] --- Obstacle Test ---" << endl;
+    Location obstacle = {2, 3, 0};
+    Item* testItem = itemBST.searchByID(34);
+    if (testItem != nullptr) {
+        Route testRoute;
+        if (warehouse.generateRoute(testItem->location, testRoute)) {
+            Robot testRobot;
+            testRobot.robotID = 99;
+            testRobot.status = AVAILABLE;
+            testRobot.taskCount = 0;
+            nav.setRobot(testRobot);
+            nav.setRoute(testRoute);
+            cout << "Obstacle placed at Zone " << obstacle.zone
+                 << ", Aisle " << obstacle.aisle
+                 << ", Shelf " << obstacle.shelf << endl;
+            nav.navigate(obstacle);
+        }
+    }
 
     cout << "\n--- Module 1: Assigned Orders History ---" << endl;
     displayAssigned(orderQueue);
