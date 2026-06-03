@@ -1,7 +1,7 @@
 #ifndef ITEMSEARCH_HPP
 #define ITEMSEARCH_HPP
 
-#include "types.hpp"
+#include "../types.hpp"
 #include <string>
 #include <iostream>
 #include <fstream>

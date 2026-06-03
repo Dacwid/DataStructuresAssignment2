@@ -1,7 +1,7 @@
 #ifndef WAREHOUSELAYOUT_HPP
 #define WAREHOUSELAYOUT_HPP
 
-#include "types.hpp"
+#include "../types.hpp"
 #include <iostream>
 #include <fstream>
 #include <cstdio>
