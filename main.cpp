@@ -121,6 +121,41 @@ int main() {
         }
     }
 
+    cout << "\n[M4] Search By Name Test" << endl;
+    Item *itemByName = itemBST.searchByName("motor");
+    if (itemByName != nullptr)
+    {
+        cout << "Found: ID "
+             << itemByName->itemID
+             << " at Zone "
+             << itemByName->location.zone
+             << endl;
+    }
+    else
+    {
+        cout << "Item not found." << endl;
+    }
+    cout << "\n[M4] Update Item Test" << endl;
+    Location newLocation = {9, 9, 9};
+    if (itemBST.updateItem(34, "Updated Item", newLocation))
+    {
+        cout << "Item 34 updated successfully." << endl;
+    }
+    else
+    {
+        cout << "Update failed." << endl;
+    }
+    cout << "\n[M4] Delete Item Test" << endl;
+    if (itemBST.deleteItem(52))
+    {
+        cout << "Item 52 deleted successfully." << endl;
+    }
+    else
+    {
+        cout << "Delete failed." << endl;
+    }
+    itemBST.displayInOrder();
+
     // final display of everything
     cout << "\n Module 1: Assigned Orders History " << endl;
     displayAssigned(orderQueue);
