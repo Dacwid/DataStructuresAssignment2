@@ -13,8 +13,11 @@ struct OrderQueue {
     int count;               
 
 
-    Order assigned[MAX_ORDERS]; 
-    int   assignedCount;        
+    Order assigned[MAX_ORDERS];
+    int   assignedCount;
+
+    Order completed[MAX_ORDERS];
+    int   completedCount;
 };
 
 
@@ -22,7 +25,8 @@ inline void initQueue(OrderQueue& queue) {
     queue.frontIndex    = 0;  
     queue.rearIndex     = 0; 
     queue.count         = 0;
-    queue.assignedCount = 0;
+    queue.assignedCount  = 0;
+    queue.completedCount = 0;
 }
 
 inline bool isEmpty(OrderQueue& queue) {
@@ -112,6 +116,28 @@ inline void displayAssigned(OrderQueue& queue) {
     for (int i = 0; i < queue.assignedCount; i++) {       
         cout << "  [" << (i + 1) << "] Order " << queue.assigned[i].orderID
              << " | Item "                                << queue.assigned[i].itemID << endl;
+    }
+}
+
+inline void completeOrder(OrderQueue& queue, Order order) {
+    order.status = COMPLETED;
+    if (queue.completedCount < MAX_ORDERS) {
+        queue.completed[queue.completedCount] = order;
+        queue.completedCount++;
+    }
+}
+
+inline void displayCompleted(OrderQueue& queue) {
+    if (queue.completedCount == 0) {
+        cout << "No completed orders yet." << endl;
+        return;
+    }
+
+    cout << "--- Completed Orders (" << queue.completedCount << ") ---" << endl;
+    for (int i = 0; i < queue.completedCount; i++) {
+        cout << "  [" << (i + 1) << "] Order " << queue.completed[i].orderID
+             << " | Item "                      << queue.completed[i].itemID
+             << " | Status: COMPLETED" << endl;
     }
 }
 

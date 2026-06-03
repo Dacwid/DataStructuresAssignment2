@@ -92,6 +92,9 @@ int main() {
 
         returnRobot(robotQueue, robot);
         cout << "[M2] Robot " << robot.robotID << " returned to queue (tasks completed: " << robot.taskCount + 1 << ")" << endl;
+
+        completeOrder(orderQueue, order);
+        cout << "[M1] Order " << order.orderID << " marked as COMPLETED." << endl;
     }
 
     cout << "\n========================================" << endl;
@@ -121,6 +124,9 @@ int main() {
     // final display of everything
     cout << "\n Module 1: Assigned Orders History " << endl;
     displayAssigned(orderQueue);
+
+    cout << "\n Module 1: Completed Orders History " << endl;
+    displayCompleted(orderQueue);
 
     cout << "\n Module 2: Final Assignment Log " << endl;
     displayAssignments(assignments, assignCount);

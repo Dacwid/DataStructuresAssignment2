@@ -13,6 +13,7 @@ struct RobotAssignment {
     int robotID;
 };
 
+// circular queue for robots, front and rear wrap around using modulo
 struct RobotQueue {
     Robot robots[MAX_ROBOTS];
     int front;
@@ -20,20 +21,24 @@ struct RobotQueue {
     int count;
 };
 
+// reset the queue to empty state
 void initQueue(RobotQueue& queue) {
     queue.front = 0;
     queue.rear = 0;
     queue.count = 0;
 }
 
+// check if no robots in queue
 bool isQueueEmpty(const RobotQueue& queue) {
     return queue.count == 0;
 }
 
+// check if queue reached max capacity
 bool isQueueFull(const RobotQueue& queue) {
     return queue.count == MAX_ROBOTS;
 }
 
+// put robot at the back of the circular queue
 void enqueueRobot(RobotQueue& queue, Robot robot) {
     if (isQueueFull(queue)) {
         cout << "Robot queue is full. Cannot enqueue robot " << robot.robotID << endl;
@@ -44,6 +49,7 @@ void enqueueRobot(RobotQueue& queue, Robot robot) {
     queue.count++;
 }
 
+// take the front robot out of the queue
 Robot dequeueRobot(RobotQueue& queue) {
     if (isQueueEmpty(queue)) {
         Robot sentinel;
@@ -58,6 +64,7 @@ Robot dequeueRobot(RobotQueue& queue) {
     return robot;
 }
 
+// reads robots from csv file, only available ones go into the queue
 int loadRobotsFromFile(string filename, RobotQueue& queue) {
     ifstream file(filename);
     if (!file.is_open()) {
@@ -105,6 +112,7 @@ int loadRobotsFromFile(string filename, RobotQueue& queue) {
     return loaded;
 }
 
+// loops until we find an available robot, skips maintenance ones
 Robot dequeueAvailableRobot(RobotQueue& queue) {
     while (!isQueueEmpty(queue)) {
         Robot robot = dequeueRobot(queue);
@@ -126,6 +134,7 @@ Robot dequeueAvailableRobot(RobotQueue& queue) {
     return sentinel;
 }
 
+// robot done with task, put it back so it can be used again
 void returnRobot(RobotQueue& queue, Robot& robot) {
     if (robot.status == MAINTENANCE) {
         cout << "Robot " << robot.robotID
@@ -138,6 +147,7 @@ void returnRobot(RobotQueue& queue, Robot& robot) {
     enqueueRobot(queue, robot);
 }
 
+// manually set a robot to maintenance mode so it wont be assigned
 void setRobotMaintenance(RobotQueue& queue, int robotID) {
     for (int i = 0; i < queue.count; i++) {
         int idx = (queue.front + i) % MAX_ROBOTS;
@@ -152,6 +162,7 @@ void setRobotMaintenance(RobotQueue& queue, int robotID) {
          << " It may be busy or does not exist." << endl;
 }
 
+// bring a robot back from maintenance so it can work again
 void clearRobotMaintenance(RobotQueue& queue, int robotID) {
     Robot robot;
     robot.robotID = robotID;
@@ -161,6 +172,7 @@ void clearRobotMaintenance(RobotQueue& queue, int robotID) {
     cout << "Robot " << robotID << " cleared from maintenance and returned to queue." << endl;
 }
 
+// prints all robots that are free to take orders rn
 void displayAvailableRobots(const RobotQueue& queue) {
     if (isQueueEmpty(queue)) {
         cout << "No available robots." << endl;
@@ -170,11 +182,12 @@ void displayAvailableRobots(const RobotQueue& queue) {
     cout << "Available robots:" << endl;
     for (int i = 0; i < queue.count; i++) {
         int idx = (queue.front + i) % MAX_ROBOTS;
-        cout << "  Robot " << queue.robots[idx].robotID
-             << " | Tasks completed: " << queue.robots[idx].taskCount << endl;
+    cout << "  Robot " << queue.robots[idx].robotID
+         << " | Tasks completed: " << queue.robots[idx].taskCount << endl;
     }
 }
 
+// show the list of which order went to which robot
 void displayAssignments(const RobotAssignment assignments[], int count) {
     if (count == 0) {
         cout << "No assignments yet." << endl;
@@ -183,11 +196,12 @@ void displayAssignments(const RobotAssignment assignments[], int count) {
 
     cout << "Robot assignments:" << endl;
     for (int i = 0; i < count; i++) {
-        cout << "  Order " << assignments[i].orderID
-             << " -> Robot " << assignments[i].robotID << endl;
+    cout << "  Order " << assignments[i].orderID
+         << " -> Robot " << assignments[i].robotID << endl;
     }
 }
 
+// prints everything about the robots in one place, kinda like a dashboard
 void displayStatusOverview(RobotQueue& queue,
                            const Robot allRobots[], int totalRobots,
                            const RobotAssignment assignments[], int assignCount) {
